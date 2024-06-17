@@ -72,10 +72,10 @@ int main(int argc,char* argv[]){
     }
     if(mode==ENCRYPTION){
         if(outpath==nullptr)outpath="sha.png";
-        shaPixel::encryption::V1(channel,passwd,inpath,outpath);
+        shaPixel::V1(channel,passwd,inpath,outpath,1);
     }
     if(mode==DECRYPT){
         if(outpath==nullptr)outpath="unsha.png";
-        shaPixel::decrypt::V1(channel,passwd,inpath,outpath);
+        shaPixel::V1(channel,passwd,inpath,outpath,-1);
     }
 }
