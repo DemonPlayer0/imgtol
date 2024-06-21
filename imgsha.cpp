@@ -17,10 +17,7 @@
 #include "imgsha.hpp"
 #include "sha.hpp"
 #include <opencv2/opencv.hpp>
-
-#define UNDEFINED 0
-#define ENCRYPTION 1
-#define DECRYPT 2
+#include "define.hpp"
 
 int main(int argc,char* argv[]){
     char mode = UNDEFINED;
@@ -29,8 +26,7 @@ int main(int argc,char* argv[]){
     char* passwd = nullptr;
     int channel = 4;
 
-    int opt = 0;
-    while((opt = getopt(argc,argv,"hv3e:d:p:o:"))!=-1){
+    for(int opt = 0;opt != -1;opt = getopt(argc,argv,"hv3e:d:p:o:")){
         switch(opt){
             case 'h':
                 inpproc::help_imgsha();
