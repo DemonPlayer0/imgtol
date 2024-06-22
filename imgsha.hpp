@@ -12,10 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with imgtol.  If not, see <https://www.gnu.org/licenses/>.
-namespace inpproc{
+inline void help(){
     using namespace std;
-    inline void help_imgsha(){
-        cout <<
+    cout <<
 R"(usage:imgsha [-e[-b]|-d[-o]]
 
 -h
@@ -34,13 +33,13 @@ R"(usage:imgsha [-e[-b]|-d[-o]]
     Disable alpha channel.
 )" << endl;
         exit(0);
-    }
-    inline void version_imgsha(){
-        cout <<
+}
+inline void version(){
+    using namespace std;
+    cout <<
 R"(imgsha classic version
 
 --ART IS NOT A MOSAIC--
 )" << endl;
         exit(0);
-    }
 }

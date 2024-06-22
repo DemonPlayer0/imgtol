@@ -25,14 +25,16 @@ int main(int argc,char* argv[]){
     const char* outpath = nullptr;
     char* passwd = nullptr;
     int channel = 4;
-
-    for(int opt = 0;opt != -1;opt = getopt(argc,argv,"hv3e:d:p:o:")){
+    
+    printf("start\n");
+    for(int opt = 0;(opt = getopt(argc,argv,"hv3e:d:p:o:"))!=-1;){
+    printf("s");
         switch(opt){
             case 'h':
-                inpproc::help_imgsha();
+                help();
                 break;
             case 'v':
-                inpproc::version_imgsha();
+                version();
                 break;
             case 'e':
                 if(mode!=UNDEFINED){
@@ -68,12 +70,13 @@ int main(int argc,char* argv[]){
                 channel=3;
                 break;
             default:
-                inpproc::help_imgsha();
+                help();
                 break;
         }
     }
+    printf("end");
     if(mode==UNDEFINED){
-        inpproc::help_imgsha();
+        help();
     }
 
     if(passwd==nullptr){
