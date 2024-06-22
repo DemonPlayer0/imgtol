@@ -13,9 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with imgtol.  If not, see <https://www.gnu.org/licenses/>.
 inline void help(){
-    using namespace std;
-    cout <<
-R"(usage:imgsha [-e[-b]|-d[-o]]
+    printf(R"(usage:imgsha [-e[-b]|-d[-o]]
 
 -h
     Get help text.
@@ -31,15 +29,13 @@ R"(usage:imgsha [-e[-b]|-d[-o]]
     Set output path.
 -3
     Disable alpha channel.
-)" << endl;
+)");
         exit(0);
 }
 inline void version(){
-    using namespace std;
-    cout <<
-R"(imgsha classic version
+    printf(R"(imgsha classic version
 
 --ART IS NOT A MOSAIC--
-)" << endl;
+)");
         exit(0);
 }

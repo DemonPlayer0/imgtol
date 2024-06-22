@@ -26,9 +26,7 @@ int main(int argc,char* argv[]){
     char* passwd = nullptr;
     int channel = 4;
     
-    printf("start\n");
     for(int opt = 0;(opt = getopt(argc,argv,"hv3e:d:p:o:"))!=-1;){
-    printf("s");
         switch(opt){
             case 'h':
                 help();
@@ -74,7 +72,7 @@ int main(int argc,char* argv[]){
                 break;
         }
     }
-    printf("end");
+
     if(mode==UNDEFINED){
         help();
     }
