@@ -24,7 +24,25 @@ static inline void sha(unsigned long long code[4],int height,int width){
     SHA256(reinterpret_cast<const unsigned char*>(hashcode),sizeof(unsigned int)*10,reinterpret_cast<unsigned char*>(code));
 }
 
-namespace shaPixel{
+namespace shapixel{
+    template<int channel_const>
+    inline void scanPixel(cv::Mat image,unsigned long long shapasswd[4],const int delta){
+        const int width = image.cols;
+        const int height = image.rows;
+
+        printf("width:%d,height:%d\n",width,height);
+
+        for(int y = 0;y<height;y++){
+            for(int x = 0;x<width;x++){
+                sha(shapasswd,x,y);
+                cv::Vec<uchar,channel_const> pixel = image.at<cv::Vec<uchar,channel_const>>(y,x);
+                for(int i = 0;i<channel_const;i++){
+                    pixel[i]+=(shapasswd[i]*delta);
+                }
+                image.at<cv::Vec<uchar,channel_const>>(y,x)=pixel;
+            }
+        }
+    }
 //    struct Range{
 //        unsigned int rx;
 //        unsigned int ry;
@@ -33,44 +51,23 @@ namespace shaPixel{
 //        unsigned int x2;
 //        unsigned int y2;
 //    };
-    inline void V1(const char channel,const char* passwd,const char* inpath,const char* outputpath,int delta){
-        cv::Mat image = cv::imread(inpath);
+    inline void V1(char channel,const char* passwd,const char* inpath,const char* outputpath,int delta){
+        cv::Mat image = cv::imread(inpath,cv::IMREAD_UNCHANGED);
         if(image.empty()){
             printf("imgsha:Can't get image for path.\n");
             exit(2);
+        }
+        if(channel>image.channels()){
+            printf("The number of custom channels is too large,automatically set to:%d\n",(channel=image.channels()));
         }
 
         unsigned long long shapasswd[4];
         SHA256(reinterpret_cast<const unsigned char*>(passwd),strlen(passwd),reinterpret_cast<unsigned char*>(shapasswd));
 
-        const int width = image.cols;
-        const int height = image.rows;
-
-        printf("width:%d,height:%d\n",width,height);
-
-        if(channel==4)
-        for(int y = 0;y<height;y++){
-            for(int x = 0;x<width;x++){
-                sha(shapasswd,x,y);
-                cv::Vec4b pixel = image.at<cv::Vec4b>(y,x);
-                for(int i = 0;i<4;i++){
-                    pixel[i]+=(shapasswd[i]*delta);
-                }
-                image.at<cv::Vec4b>(y,x)=pixel;
-            }
-        }
-
-        if(channel==3)
-        for(int y = 0;y<height;y++){
-            for(int x = 0;x<width;x++){
-                sha(shapasswd,x,y);
-                cv::Vec3b pixel = image.at<cv::Vec3b>(y,x);
-                for(int i = 0;i<3;i++){
-                    pixel[i]+=shapasswd[i];
-                }
-                image.at<cv::Vec3b>(y,x)=pixel;
-            }
-        }
+        if(channel==4)scanPixel<4>(image,shapasswd,delta);
+        if(channel==3)scanPixel<3>(image,shapasswd,delta);
+        if(channel==2)scanPixel<2>(image,shapasswd,delta);
+        if(channel==1)scanPixel<1>(image,shapasswd,delta);
 
         printf("finish.\n");
 

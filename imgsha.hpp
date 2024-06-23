@@ -27,8 +27,8 @@ inline void help(){
     Set encryption or decrypt password.
 -o <path>
     Set output path.
--3
-    Disable alpha channel.
+-c <channel>
+    Set channel quantity.
 )");
         exit(0);
 }

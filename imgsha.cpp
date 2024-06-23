@@ -15,8 +15,9 @@
 #include <iostream>
 #include <unistd.h>
 #include "imgsha.hpp"
-#include "sha.hpp"
+#include "shapixel.hpp"
 #include <opencv2/opencv.hpp>
+#include <cstdlib>
 #include "define.hpp"
 
 int main(int argc,char* argv[]){
@@ -24,9 +25,9 @@ int main(int argc,char* argv[]){
     char* inpath = nullptr;
     const char* outpath = nullptr;
     char* passwd = nullptr;
-    int channel = 4;
-    
-    for(int opt = 0;(opt = getopt(argc,argv,"hv3e:d:p:o:"))!=-1;){
+    char channel = 4;
+
+    for(int opt = 0;(opt = getopt(argc,argv,"hve:d:p:o:c:"))!=-1;){
         switch(opt){
             case 'h':
                 help();
@@ -64,8 +65,16 @@ int main(int argc,char* argv[]){
                 }
                 outpath=optarg;
                 break;
-            case '3':
-                channel=3;
+            case 'c':
+                if(channel!=0){
+                    printf("imgsha:Cannot set the number of channels repeatedly.\n");
+                    exit(1);
+                }
+                channel=atoi(optarg);
+                if(channel<=0){
+                    printf("imgsha:Invalid channels quantity.\n");
+                    exit(0);
+                }
                 break;
             default:
                 help();
@@ -83,10 +92,10 @@ int main(int argc,char* argv[]){
     }
     if(mode==ENCRYPTION){
         if(outpath==nullptr)outpath="sha.png";
-        shaPixel::V1(channel,passwd,inpath,outpath,1);
+        shapixel::V1(channel,passwd,inpath,outpath,1);
     }
     if(mode==DECRYPT){
         if(outpath==nullptr)outpath="unsha.png";
-        shaPixel::V1(channel,passwd,inpath,outpath,-1);
+        shapixel::V1(channel,passwd,inpath,outpath,-1);
     }
 }
