@@ -16,8 +16,6 @@
 #include <openssl/sha.h>
 #include <iostream>
 
-#define DEBUG 1
-
 static inline void sha(unsigned long long code[4],int height,int width){
     unsigned int hashcode[10];
     hashcode[8]=height;
@@ -47,9 +45,9 @@ namespace shaPixel{
 
         const int width = image.cols;
         const int height = image.rows;
-        #ifdef DEBUG
+
         printf("width:%d,height:%d\n",width,height);
-        #endif
+
         if(channel==4)
         for(int y = 0;y<height;y++){
             for(int x = 0;x<width;x++){
@@ -73,9 +71,9 @@ namespace shaPixel{
                 image.at<cv::Vec3b>(y,x)=pixel;
             }
         }
-        #ifdef DEBUG
+
         printf("finish.\n");
-        #endif
+
         if(!cv::imwrite(outputpath,image)){
             printf("imgshu:Can't write image for %s\n",outputpath);
             exit(255);
