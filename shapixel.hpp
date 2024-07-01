@@ -17,17 +17,12 @@
 #include <openssl/evp.h>
 #include <iostream>
 
-static inline void sha(unsigned long long code[4],int height,int width){
-    unsigned int hashcode[10];
-    hashcode[8]=height;
-    hashcode[9]=width;
-    memcpy(hashcode,code,4*sizeof(unsigned long long));
-    
+static inline void sha_V1(const char* hashcode,unsigned char* code,unsigned const int size){
     static EVP_MD_CTX* ctx = EVP_MD_CTX_new();
     unsigned int lengthOfHash = 0;
     
     EVP_DigestInit_ex(ctx,EVP_sha3_256(),nullptr);
-    EVP_DigestUpdate(ctx,(const char*)hashcode,sizeof(hashcode));
+    EVP_DigestUpdate(ctx,(const char*)hashcode,size/sizeof(unsigned char));
     EVP_DigestFinal_ex(ctx,(unsigned char*)code,&lengthOfHash);
     
     EVP_MD_CTX_reset(ctx);
@@ -36,14 +31,19 @@ static inline void sha(unsigned long long code[4],int height,int width){
 namespace shapixel{
     template<int channel_const>
     inline void scanPixel(cv::Mat image,unsigned long long shapasswd[4],const int delta){
-        const int width = image.cols;
-        const int height = image.rows;
+        unsigned int width = image.cols;
+        unsigned int height = image.rows;
+	const unsigned int size = sizeof(unsigned long long)*4+sizeof(int)*2;
 
         printf("width:%d,height:%d\n",width,height);
 
-        for(int y = 0;y<height;y++){
-            for(int x = 0;x<width;x++){
-                sha(shapasswd,x,y);
+        for(unsigned int y = 0;y<height;y++){
+            for(unsigned int x = 0;x<width;x++){
+		unsigned int code[size/sizeof(unsigned char)];
+		code[8]=height;
+		code[9]=width;
+		memcpy(code,shapasswd,size);
+                sha_V1((const char*)code,(unsigned char*)shapasswd,size);
                 cv::Vec<uchar,channel_const> pixel = image.at<cv::Vec<uchar,channel_const>>(y,x);
                 for(int i = 0;i<channel_const;i++){
                     pixel[i]+=(shapasswd[i]*delta);
@@ -71,7 +71,7 @@ namespace shapixel{
         }
 
         unsigned long long shapasswd[4];
-        SHA256(reinterpret_cast<const unsigned char*>(passwd),strlen(passwd),reinterpret_cast<unsigned char*>(shapasswd));
+	sha_V1(passwd,(unsigned char*)shapasswd,strlen(passwd));
 
         if(channel==4)scanPixel<4>(image,shapasswd,delta);
         if(channel==3)scanPixel<3>(image,shapasswd,delta);
