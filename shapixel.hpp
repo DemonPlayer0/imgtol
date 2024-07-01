@@ -14,6 +14,7 @@
 // along with imgtol.  If not, see <https://www.gnu.org/licenses/>.
 #include <opencv2/opencv.hpp>
 #include <openssl/sha.h>
+#include <openssl/evp.h>
 #include <iostream>
 
 static inline void sha(unsigned long long code[4],int height,int width){
@@ -21,7 +22,15 @@ static inline void sha(unsigned long long code[4],int height,int width){
     hashcode[8]=height;
     hashcode[9]=width;
     memcpy(hashcode,code,4*sizeof(unsigned long long));
-    SHA256(reinterpret_cast<const unsigned char*>(hashcode),sizeof(unsigned int)*10,reinterpret_cast<unsigned char*>(code));
+    
+    static EVP_MD_CTX* ctx = EVP_MD_CTX_new();
+    unsigned int lengthOfHash = 0;
+    
+    EVP_DigestInit_ex(ctx,EVP_sha3_256(),nullptr);
+    EVP_DigestUpdate(ctx,(const char*)hashcode,sizeof(hashcode));
+    EVP_DigestFinal_ex(ctx,(unsigned char*)code,&lengthOfHash);
+    
+    EVP_MD_CTX_reset(ctx);
 }
 
 namespace shapixel{
