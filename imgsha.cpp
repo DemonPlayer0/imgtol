@@ -36,7 +36,11 @@ int main(int argc,char* argv[]){
                 version();
                 break;
             case 'e':
-                if(mode!=UNDEFINED){
+                if(mode==ENCRYPTION){
+                    printf("imgsha:-e cannot coexist with -e.\n");
+                    exit(1);
+                }
+                if(mode==DECRYPT){
                     printf("imgsha:-e cannot coexist with -d.\n");
                     exit(1);
                 }
@@ -44,7 +48,11 @@ int main(int argc,char* argv[]){
                 inpath=optarg;
                 break;
             case 'd':
-                if(mode!=UNDEFINED){
+                if(mode==DECRYPT){
+                    printf("imgsha:-d cannot coexist with -d.\n");
+                    exit(1);
+                }
+                if(mode==ENCRYPTION){
                     printf("imgsha:-d cannot coexist with -e.\n");
                     exit(1);
                 }
