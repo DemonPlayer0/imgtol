@@ -81,7 +81,7 @@ namespace shapixel{
         printf("finish.\n");
 
         if(!cv::imwrite(outputpath,image)){
-            printf("imgshu:Can't write image for %s\n",outputpath);
+            printf("imgsha:Can't write image for %s\n",outputpath);
             exit(255);
         }
     }
